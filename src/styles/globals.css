@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('./fonts.css');
+@import url('./scrollbar.css');
+
+* {
+  word-spacing: normal;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* General */
+  --black: #141414;
+  --white: #f9f9f9;
+  --primary: #8266f6;
+  --secondary: #dafa72;
+  --box-shadow: #c5c5c5;
+  --text-shadow: #e8e8e8;
+
+  /* For cards */
+  --light-purple: #e3dbfa;
+  --light-blue: #b8e3fa;
+  --light-green: #d4f6ed;
+  --light-yellow: #fff3cc;
+  --light-orange: #ffe1cc;
+  --light-pink: #fbe2f4;
+  --light-red: #f9d6d6;
+}
+
+html,
+body {
+  min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden !important;
+  background-color: var(--white);
+}
