@@ -1,28 +1,28 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { jobType } from "@/utlis/types";
+import { noteType } from "../../utlis/types";
 
-const jobSlice = createSlice({
-  name: "jobs",
+const NoteSlice = createSlice({
+  name: "Notes",
   initialState: {
-    jobData: [] as jobType[],
-    backupData: [] as jobType[],
+    noteData: [] as noteType[],
+    backupData: [] as noteType[],
     categoryData: [] as any[],
     sort_market_cap: "desc",
     sort_current_price: "asc",
   },
   reducers: {
-    setJobData: (state, action: PayloadAction<jobType[]>) => {
-      state.jobData = action.payload;
+    setNoteData: (state, action: PayloadAction<noteType[]>) => {
+      state.noteData = action.payload;
       state.backupData = action.payload;
     },
     setCategoryData: (state, action: PayloadAction<any[]>) => {
       state.categoryData = action.payload;
     },
-    clearJobData: (state) => {
-      state.jobData = [];
+    clearNoteData: (state) => {
+      state.noteData = [];
     },
-    sortJobData: (state, action: PayloadAction<jobType[]>) => {
-      state.jobData = action.payload;
+    sortNoteData: (state, action: PayloadAction<noteType[]>) => {
+      state.noteData = action.payload;
     },
     setSortingDirCP: (state, action: PayloadAction<string>) => {
       state.sort_current_price = action.payload;
@@ -30,7 +30,7 @@ const jobSlice = createSlice({
     setSortingDirMC: (state, action: PayloadAction<string>) => {
       state.sort_market_cap = action.payload;
     },
-    filterJobData: (state, action: PayloadAction<string>) => {
+    filterNoteData: (state, action: PayloadAction<string>) => {
       let tokens = action.payload
         .toLowerCase()
         .split(" ")
@@ -39,32 +39,32 @@ const jobSlice = createSlice({
         });
       let searchTermRegex = new RegExp(tokens.join("|"), "gim");
       let filteredResults: any[] = [];
-      let jobString = "";
+      let NoteString = "";
 
       if (tokens.length === 0) {
-        state.jobData = state.backupData;
+        state.noteData = state.backupData;
       } else {
-        state.jobData.forEach((job: any) => {
-          jobString += job.name.toLowerCase() + job.symbol.toLowerCase();
-          if (jobString.match(searchTermRegex)) {
-            filteredResults.push(job);
-            jobString = "";
+        state.noteData.forEach((Note: any) => {
+          NoteString += Note.name.toLowerCase() + Note.symbol.toLowerCase();
+          if (NoteString.match(searchTermRegex)) {
+            filteredResults.push(Note);
+            NoteString = "";
           }
         });
       }
-      state.jobData = filteredResults;
+      state.noteData = filteredResults;
     },
   },
 });
 
 export const {
-  setJobData,
+  setNoteData,
   setCategoryData,
-  clearJobData,
-  sortJobData,
-  filterJobData,
+  clearNoteData,
+  sortNoteData,
+  filterNoteData,
   setSortingDirCP,
   setSortingDirMC,
-} = jobSlice.actions;
+} = NoteSlice.actions;
 
-export default jobSlice.reducer;
+export default NoteSlice.reducer;

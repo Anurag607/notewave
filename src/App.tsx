@@ -1,17 +1,27 @@
-import { Filters, Navbar, Topbar } from "../src/components";
-import classNames from "classnames";
+import Layout from "./Layout";
+import HomePage from "./pages/homePage";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useAppSelector } from './redux/hooks';
+import { AddFormPopup } from "./components";
 
 export default function Home() {
+  const { isFormOpen } = useAppSelector((state: any) => state.form);
   return (
-    <main
-      className={classNames({
-        "min-h-screen overflow-x-hidden bg-off-white": true,
-        "flex flex-col items-start justify-start": true,
-      })}
-    >
-      <Navbar />
-      <Topbar />
-      <Filters />
-    </main>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={
+            <Layout>
+              <>
+                {isFormOpen && <AddFormPopup />}
+                <HomePage>
+                  <div />
+                </HomePage>
+              </>
+            </Layout>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }

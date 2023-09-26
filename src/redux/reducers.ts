@@ -1,16 +1,18 @@
 import { combineReducers } from "redux";
 import sidebarSlice from "./reducers/sidebarSlice";
 import searchSlice from "./reducers/searchSlice";
-import coinSlice from "./reducers/jobSlice";
+import noteSlice from "./reducers/noteSlice";
 import menuSlice from "./reducers/menuSlice";
 import filterSlice from "./reducers/filterSlice";
-import countrySlice from "./reducers/countrySlice";
+import categorySlice from "./reducers/categorySlice";
+import formSlice from './reducers/formSlice';
 
 export default combineReducers({
   sidebar: sidebarSlice,
   searchBar: searchSlice,
-  coins: coinSlice,
+  notes: noteSlice,
   menu: menuSlice,
   filter: filterSlice,
-  country: countrySlice,
+  cateogry: categorySlice,
+  form: formSlice,
 });

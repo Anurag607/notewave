@@ -40,6 +40,8 @@ const DarkMode: React.FC = () => {
       className={classNames({
         [styles.darkMode]: true,
         "p-1 rounded-lg": true,
+        "mobile:mb-2": true,
+        "shadow-[0.5px_1.25px_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0.5px_1.25px_4px_0_rgba(0,0,0,0.8)]": true,
       })}
       data-theme={theme}
       onClick={(event) => {
@@ -54,7 +56,7 @@ const DarkMode: React.FC = () => {
         alt={"switch"}
         className={classNames({
           "w-7 h-7": true,
-          "mobile:w-6 mobile:h-6": true,
+          "!cursor-pointer": true,
         })}
       />
     </div>
