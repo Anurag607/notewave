@@ -1,40 +1,58 @@
 import { setNoteData } from "../redux/reducers/noteSlice";
 
-const filterData = async (
+const filterDatabySearchParams = async (
   data: any,
-  backupData: any,
-  filterParam: string,
+  searchParam: string,
   reduxDispatch: React.Dispatch<any>
 ) => {
-  let filteredData: any[] = [];
-  let fetchedData: any[] = [];
-  try {
-    const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${filterParam}&order=market_cap_desc&per_page=250&page=1&sparkline=false`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          Content: "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
-    );
-    if (response.status !== 404) fetchedData = await response.json();
-    backupData.forEach((coin: any) => {
-      fetchedData.forEach((fetchCoin) => {
-        if (coin.id === fetchCoin.id) {
-          filteredData.push(coin);
-          return;
-        }
-      });
-    });
-    console.log(fetchedData);
-    console.log(filteredData);
-    reduxDispatch(setNoteData(filteredData));
-  } catch (err: any) {
-    console.error(err);
+  let tokens = searchParam
+    .toLowerCase()
+    .split(" ")
+    .filter(function (token: string) {
+      return token.trim() !== "";
+    }
+  );
+  let searchTermRegex = new RegExp(tokens.join("|"), "gim");
+  let filteredResults: any[] = [];
+  let NoteString = "";
+
+  if (tokens.length === 0) {
+    reduxDispatch(setNoteData(data));
+    return data;
   }
+  data.forEach((Note: any) => {
+    NoteString += Note.title.toLowerCase() + Note.email.toLowerCase();
+    if (NoteString.match(searchTermRegex)) {
+      filteredResults.push(Note);
+      NoteString = "";
+    }
+  });
+  reduxDispatch(setNoteData(filteredResults));
+
+  return filteredResults;
 };
 
-export default filterData;
+const filterDatabyCategory = async (
+  data: any,
+  category: string,
+  reduxDispatch: React.Dispatch<any>
+) => {
+  let filteredResults: any[] = [];
+  if (category === "All") {
+    reduxDispatch(setNoteData(data));
+    return data;
+  }
+  data.forEach((Note: any) => {
+    if (Note.category === category) {
+      filteredResults.push(Note);
+    }
+  });
+
+  reduxDispatch(setNoteData(filteredResults));
+  return filteredResults;
+};
+
+export {
+  filterDatabySearchParams,
+  filterDatabyCategory,
+};

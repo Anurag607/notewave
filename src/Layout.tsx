@@ -1,20 +1,18 @@
 import { PropsWithChildren } from "react";
-import { Navbar, Sidebar, Footer } from "./components";
+import { Navbar, Sidebar } from "./components";
+import classNames from "classnames";
 
 const Layout = (props: PropsWithChildren) => {
   return (
-    <div className="grid min-h-screen grid-rows-header bg-zinc-100 dark:bg-gray-900">
-      <div>
+    <div className="relative max-w-screen max-h-screen flex flex-row items-end justify-end bg-white dark:bg-gray-900">
+      <Sidebar />
+      <div className={classNames({
+          "relative h-screen w-[calc(100vw_-_50px)] flex flex-col items-center justify-between": true,
+          "bg-[url('/bg-3.png')] bg-cover bg-no-repeat": true,
+        })
+      }>
         <Navbar />
-      </div>
-
-      <div className="relative h-fit w-screen flex flex-row items-center justify-center">
-        <Sidebar />
         {props.children}
-      </div>
-
-      <div className="bg-zinc-100 dark:bg-gray-900">
-        <Footer />
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { openFilter, closeFilter } from "../../redux/reducers/filterSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useOnClickOutside } from "usehooks-ts";
 import { setNoteData } from "../../redux/reducers/noteSlice";
-import filterData from "../../scipts/filterScript";
+import { filterDatabyCategory } from "../../scipts/filterScript";
 
 const Filter:React.FC = () => {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -21,7 +21,7 @@ const Filter:React.FC = () => {
 
   const ClickEventHandler = (event: React.MouseEvent<HTMLElement>) => {
     const target = event.currentTarget;
-    filterData(noteData, backupData, target.dataset.value!, dispatch);
+    filterDatabyCategory(noteData,target.dataset.value!, dispatch);
     dispatch(closeFilter());
   };
 

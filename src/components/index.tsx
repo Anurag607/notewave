@@ -8,6 +8,7 @@ import SortBar from "./SortBar";
 import AddFormPopup from "./Forms/add_form";
 import UpdateFormPopup from "./Forms/update_form";
 import FAB from "./FAB";
+import Pagination from "./Pagination";
 
 export {
   Navbar,
@@ -19,5 +20,6 @@ export {
   SortBar,
   AddFormPopup,
   UpdateFormPopup,
-  FAB
+  FAB,
+  Pagination,
 };

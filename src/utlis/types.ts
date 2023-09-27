@@ -1,17 +1,17 @@
-import { categoryList } from "./categories";
-
 export type noteType = {
-  id: number;
+  id: string;
   title: string;
-  subTitle: string;
+  subtitle: string;
   email: string;
-  content: string;
+  note: string;
   type: string;
+  image: string;
+  pinned: boolean;
+  color: string;
+  createdAt: string;
 };
 
-export type searchParamsType = {
-  keywords: string;
-  location: string;
-};
-
-export type SelectMenuOption = (typeof categoryList)[number];
+export type PaginationProps = {
+  data: noteType[];
+  itemsPerPage: number;
+}

@@ -22,9 +22,9 @@ const Sidebar: React.FC = () => {
     <div
       className={classNames({
         "flex flex-col justify-between z-[1001]": true, // layout
-        "bg-indigo-700 text-zinc-50": true, // colors
-        "md:w-full md:sticky md:top-16 md:z-0 top-0 z-20 fixed": true, // positioning
-        "md:h-[89vh] h-full md:!w-[100px] w-0": true, // for height and width
+        "bg-[#ffffff] dark:bg-indigo-700 text-zinc-50": true, // colors
+        "fixed left-0 top-0": true, // positioning
+        "md:h-screen h-full md:!w-[50px] w-0": true, // for height and width
         "transition-transform .3s ease-in-out md:-translate-x-0": true, //animations
         "-translate-x-full ": !isSidebarOpen, //hide sidebar to the left when closed
       })}

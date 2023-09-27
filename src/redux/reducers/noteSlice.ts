@@ -7,12 +7,23 @@ const NoteSlice = createSlice({
     noteData: [] as noteType[],
     backupData: [] as noteType[],
     categoryData: [] as any[],
-    sort_market_cap: "desc",
-    sort_current_price: "asc",
+    focusedNote: {
+      id: "",
+      title: "",
+      subtitle: "",
+      email: "",
+      note: "",
+      type: "",
+      image: "",
+      pinned: false,
+      color: "#ff9b73"
+    } as noteType,
   },
   reducers: {
     setNoteData: (state, action: PayloadAction<noteType[]>) => {
       state.noteData = action.payload;
+    },
+    setBackupData: (state, action: PayloadAction<noteType[]>) => {
       state.backupData = action.payload;
     },
     setCategoryData: (state, action: PayloadAction<any[]>) => {
@@ -21,38 +32,21 @@ const NoteSlice = createSlice({
     clearNoteData: (state) => {
       state.noteData = [];
     },
-    sortNoteData: (state, action: PayloadAction<noteType[]>) => {
-      state.noteData = action.payload;
+    setFocusedNote: (state, action: PayloadAction<noteType>) => {
+      state.focusedNote = action.payload;
     },
-    setSortingDirCP: (state, action: PayloadAction<string>) => {
-      state.sort_current_price = action.payload;
-    },
-    setSortingDirMC: (state, action: PayloadAction<string>) => {
-      state.sort_market_cap = action.payload;
-    },
-    filterNoteData: (state, action: PayloadAction<string>) => {
-      let tokens = action.payload
-        .toLowerCase()
-        .split(" ")
-        .filter(function (token: string) {
-          return token.trim() !== "";
-        });
-      let searchTermRegex = new RegExp(tokens.join("|"), "gim");
-      let filteredResults: any[] = [];
-      let NoteString = "";
-
-      if (tokens.length === 0) {
-        state.noteData = state.backupData;
-      } else {
-        state.noteData.forEach((Note: any) => {
-          NoteString += Note.name.toLowerCase() + Note.symbol.toLowerCase();
-          if (NoteString.match(searchTermRegex)) {
-            filteredResults.push(Note);
-            NoteString = "";
-          }
-        });
-      }
-      state.noteData = filteredResults;
+    clearFocusedNote: (state) => {
+      state.focusedNote = {
+      id: "",
+      title: "",
+      subtitle: "",
+      email: "",
+      note: "",
+      type: "",
+      image: "",
+      pinned: false,
+      color: "#ff9b73"
+    } as noteType;
     },
   },
 });
@@ -61,10 +55,9 @@ export const {
   setNoteData,
   setCategoryData,
   clearNoteData,
-  sortNoteData,
-  filterNoteData,
-  setSortingDirCP,
-  setSortingDirMC,
+  setBackupData,
+  setFocusedNote,
+  clearFocusedNote,
 } = NoteSlice.actions;
 
 export default NoteSlice.reducer;

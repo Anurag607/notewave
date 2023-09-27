@@ -14,9 +14,9 @@ const FAB: React.FC = () => {
     <button
       onClick={handleOpenForm}
       className={classnames({
-        "fixed bottom-20 right-6": true,
+        "fixed bottom-10 right-10": true,
         "p-4 rounded-full shadow-lg": true,
-        "bg-blue-500 text-white hover:bg-blue-600": true,
+        "bg-[#ff9b73] text-white hover:bg-[#ffc972] dark:bg-blue-400 hover:dark:bg-blue-600": true,
         "transition duration-300 ease-in-out": true,
       })}
     >

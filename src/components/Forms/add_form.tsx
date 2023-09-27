@@ -2,22 +2,40 @@ import React, { useState } from 'react';
 import { useAppDispatch } from '../../redux/hooks';
 import { closeForm } from '../../redux/reducers/formSlice';
 import classNames from 'classnames';
+import { addNote, getNotes, uploadImage } from '../../Firebase/scripts';
+import { PushpinFilled, PushpinOutlined } from '@ant-design/icons';
 
-const PopupForm: React.FC = () => {
+const AddFormPopup: React.FC = () => {
   const dispatch = useAppDispatch();
+  const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     subtitle: '',
     email: '',
     note: '',
+    pinned: false,
+    image: null,
+    color: '#ff9b73',
   });
 
   const handleCloseForm = () => {
     dispatch(closeForm());
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const ImageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files![0];
+    setFile(file);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if(file == null) {
+      await addNote(formData);
+    } else {
+      await uploadImage(formData,file);
+    }
+    await getNotes(dispatch);
+    handleCloseForm();
   };
 
   const inputFields = [
@@ -27,17 +45,21 @@ const PopupForm: React.FC = () => {
     },
     {
       name: "Sub-Title",
-      function: (e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, title: e.target.value }),
+      function: (e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, subtitle: e.target.value }),
     },
     {
       name: "Email ID",
-      function: (e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, title: e.target.value }),
-    },
-    {
-      name: "Note",
-      function: (e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, title: e.target.value }),
+      function: (e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value }),
     },
   ]
+
+  const Pin = () => {
+    if(formData.pinned == false) {
+      return <PushpinOutlined className={"text-xl pb-1"} />
+    } else {
+      return <PushpinFilled className={"text-xl pb-1"} />
+    }
+  }
 
   return (
     <div className={classNames({
@@ -45,10 +67,10 @@ const PopupForm: React.FC = () => {
       "flex items-center justify-center": true,
       "bg-gray-800 bg-opacity-50": true,
     })}>
-      <div className="relative bg-white mobile:w-[95vw] rounded-lg p-4 shadow-lg w-96 dark:bg-gray-900">
+      <div className="relative bg-white mobile:w-[95vw] rounded-lg p-4 shadow-lg w-fit dark:bg-gray-900">
         <button
           className={classNames({
-            "absolute top-3 right-2.5": true,
+            "absolute top-1 right-1": true,
             "inline-flex items-center": true,
             "rounded-lg text-sm p-1.5 ml-auto": true,
             "hover:bg-gray-200 hover:text-gray-900": true,
@@ -73,7 +95,8 @@ const PopupForm: React.FC = () => {
           </svg>
           <span className="sr-only">Close modal</span>
         </button>
-        <div className="px-2 py-4 border-b rounded-t dark:border-gray-600 flex gap-2">
+        <div className='border-b rounded-t dark:border-gray-600 flex justify-between items-center'>
+          <div className="px-2 py-4 flex gap-2">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               fill="none" 
@@ -91,48 +114,133 @@ const PopupForm: React.FC = () => {
             <h3 className="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
               Add Note
             </h3>
+          </div>
+          <div className={"flex gap-2 items-center justify-center w-fit h-fit"}>
+            <input 
+              type="color" 
+              id="noteColor" 
+              name="noteColor" 
+              value={formData.color}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, color: e.target.value })}  
+            />
+            <div 
+              onClick={() => setFormData({ ...formData, pinned: !formData.pinned })}
+              className={classNames({
+                "px-2 flex gap-2 justify-center items-center mr-4 sm:mr-6 rounded-lg cursor-pointer": true,
+                "bg-gray-900 text-[#e8e8e8] dark:bg-[#e8e8e8] dark:text-gray-900": !formData.pinned,
+                "bg-transparent border dark:text-[#e8e8e8]": formData.pinned,
+                "ripple": true,
+              })}
+            >
+              <Pin />
+              {formData.pinned ? "Pinned" : "Pin"}  
+            </div>
+          </div>
         </div>
-        <form onSubmit={handleSubmit}>
-          {inputFields.map((el: typeof inputFields[0],i: number) => {
-            return (
-              <div className="relative mb-4 mt-2" key={i}>
-                <input 
-                  type="text" 
-                  id={el.name}
+        <form 
+          onSubmit={handleSubmit}
+          className="relative flex flex-col items-center justify-center w-full"
+        >
+          <div className="relative flex sm:flex-row h-[60vh] overflow-scroll sm:h-fit flex-col items-start justify-start px-2 sm:px-0 sm:justify-center w-full sm:gap-4">
+            <div>
+              {inputFields.map((el: typeof inputFields[0],i: number) => {
+                return (
+                  <div className="relative mb-4 mt-2" key={i}>
+                    <input 
+                      type="text" 
+                      id={el.name}
+                      className={classNames({
+                        "block px-2.5 pb-2.5 pt-4 w-[15rem]": true,
+                        "text-sm text-gray-900 bg-gray-100 dark:bg-gray-700": true,
+                        "rounded-lg border-1 border-gray-900": true,
+                        "appearance-none dark:text-white": true,
+                        "dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer": true,
+                      })}
+                      onChange={el.function}
+                      placeholder=" "
+                      required
+                    />
+                    <label 
+                      htmlFor={el.name}
+                      className={classNames({
+                        "absolute top-2 left-1": true,
+                        "z-10 origin-[0] px-2": true,
+                        "peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500": true,
+                        "peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2": true,
+                        "peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4": true,
+                        "bg-transparent": true,
+                        "text-sm text-gray-500 dark:text-gray-400": true,
+                        "duration-300 transform -translate-y-4 scale-75": true,
+                      })}
+                    >
+                      {el.name}
+                    </label>
+                  </div>
+                )
+              })}
+            </div>
+            <div>
+              <div className="relative mb-4 mt-2 flex flex-col items-start justify-start">
+                <textarea
+                  id="Note"
+                  rows={5}
                   className={classNames({
-                    "block px-2.5 pb-2.5 pt-4 w-full": true,
+                    "block px-2 py-2 w-[15rem] resize-none": true,
                     "text-sm text-gray-900 bg-gray-100 dark:bg-gray-700": true,
                     "rounded-lg border-1 border-gray-900": true,
                     "appearance-none dark:text-white": true,
                     "dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer": true,
                   })}
-                  onChange={el.function}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, note: e.target.value })}
                   placeholder=" "
+                  required
                 />
                 <label 
-                  htmlFor={el.name}
+                  htmlFor="Note"
                   className={classNames({
-                    "absolute top-2 left-1": true,
+                    "absolute left-1": true,
+                    "top-2": formData.note.length > 0,
+                    "top-6": formData.note.length == 0,
                     "z-10 origin-[0] px-2": true,
                     "peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500": true,
-                    "peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2": true,
+                    "peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-4": true,
                     "peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4": true,
                     "bg-transparent": true,
                     "text-sm text-gray-500 dark:text-gray-400": true,
                     "duration-300 transform -translate-y-4 scale-75": true,
                   })}
                 >
-                  {el.name}
+                  Note
                 </label>
               </div>
-            )
-          })}                
+              <div>
+                <input 
+                  type="file" 
+                  id="note_image" 
+                  accept="image/*"
+                  onChange={ImageChangeHandler}
+                  className={classNames({
+                    "block w-[15rem] cursor-pointer focus:outline-none": true,
+                    "text-sm text-gray-900": true,
+                    "bg-gray-50 dark:text-gray-400": true,
+                    "border border-gray-300 rounded-sm": true,
+                    "dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400": true,
+                  })}  
+                />
+                <p 
+                  className="mt-1 text-sm text-gray-500 dark:text-gray-300" 
+                >
+                  SVG, PNG, JPG or GIF (MAX. 800x400px).
+                </p>
+              </div>
+            </div>
+          </div>    
           <div className="mt-4 w-full flex items-center justify-end">
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+              className="bg-[#ff9b73] text-white px-4 py-2 rounded-md hover:bg-[#ffc972] focus:outline-none ripple dark:bg-blue-400 hover:dark:bg-blue-600"
             >
-              Submit
+              Add
             </button>
           </div>
         </form>
@@ -141,4 +249,4 @@ const PopupForm: React.FC = () => {
   );
 };
 
-export default PopupForm;
+export default AddFormPopup;

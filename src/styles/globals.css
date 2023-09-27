@@ -82,3 +82,14 @@ input[type=passwords] {
   border: 2px solid var(--black);
   /* creates padding around scroll thumb */
 }
+
+/* Ripple effect */
+.ripple {
+  background-position: center;
+  transition: all 0.8s;
+}
+
+.ripple:active {
+  background-size: 100%;
+  transition: all 0s;
+}

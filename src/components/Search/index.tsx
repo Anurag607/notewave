@@ -1,9 +1,10 @@
 import React from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setNoteData, filterNoteData } from "../../redux/reducers/noteSlice";
+import { setNoteData } from "../../redux/reducers/noteSlice";
+import { filterDatabySearchParams } from "../../scipts/filterScript";
 
-const Search = () => {
+const Search:React.FC = () => {
   const { backupData } = useAppSelector((state: any) => state.notes);
   const [searchParams, setSearchParams] = React.useState<string>("");
   const dispatch = useAppDispatch();
@@ -12,7 +13,7 @@ const Search = () => {
     let searchText = event.currentTarget.value;
     setSearchParams(searchText);
     searchText.length > 0
-      ? dispatch(filterNoteData(searchText))
+      ? filterDatabySearchParams(backupData,searchText, dispatch)
       : dispatch(setNoteData(backupData));
   };
 
@@ -46,7 +47,7 @@ const Search = () => {
           type="text"
           id="table-search"
           className={classNames({
-            "block p-2 pl-10 w-[105%] bg-gray-50": true, //display, padding, width and bg styling
+            "block p-2 pl-10 w-[105%] bg-white": true, //display, padding, width and bg styling
             "text-sm text-gray-900": true, //text styling
             "border border-gray-300 rounded-lg": true, //border styling
             "focus:ring-blue-500 focus:border-blue-500": true, //on focus styling

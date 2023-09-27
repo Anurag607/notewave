@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from 'react-router-dom';
 
-const Footer = () => {
+const Footer:React.FC = () => {
   return (
     <footer
       className={classNames({
