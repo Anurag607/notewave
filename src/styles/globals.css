@@ -52,6 +52,17 @@
   --color-3: #bbf7d0;
   --color-4: #bae6fd;
   --color-5: #fecaca;
+
+  /* For Gradient */
+  --gradient-1: #ffffff;
+  --gradient-2: #faaa73;
+  --gradient-3: #fef595;
+}
+
+[data-theme="dark"] {
+  --gradient-1: #111827;
+  --gradient-2: #2563eb;
+  --gradient-3: #a78bfa;
 }
 
 * {
@@ -95,7 +106,7 @@ input[type=passwords] {
 /* Scrollbar */
 ::-webkit-scrollbar {
   border-radius: 0.5rem;
-  height: 0.3rem;
+  height: 0rem;
   /* width of the horizontal  scrollbar */
   width: 0.2rem;
   /* width of the vertical scrollbar */
@@ -109,8 +120,8 @@ input[type=passwords] {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 0.5rem;
-  background-color: var(--black);
-  border: 2px solid var(--black);
+  background-color: var(--color-1);
+  border: 2px solid var(--color-1);
   /* creates padding around scroll thumb */
 }
 
@@ -125,6 +136,7 @@ input[type=passwords] {
   transition: all 0s;
 }
 
+/* Input Color */
 .color_input {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -144,4 +156,24 @@ input[type=passwords] {
 .color_input::-moz-color-swatch {
   border-radius: 0.5rem;
   border: none;
+}
+
+.gradient-background {
+  background: linear-gradient(300deg, var(--gradient-1), var(--gradient-2), var(--gradient-2));
+  background-size: 150% 150%;
+  animation: gradient-animation 3s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }

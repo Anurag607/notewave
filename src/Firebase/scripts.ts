@@ -9,6 +9,7 @@ import {
   getDoc,
   doc,
   setDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { setNoteData, setBackupData } from "../redux/reducers/noteSlice";
 
@@ -61,9 +62,8 @@ const updateNote = async (id: string, note: any, reduxDispatch: React.Dispatch<a
 
 // Delete Note
 const deleteNote = async (id: string, reduxDispatch: React.Dispatch<any>) => {
-    await setDoc(doc(db, "notes", id), {
-        deletedAt: serverTimestamp(),
-    });
+    const docRef = doc(db, "notes", id);
+    await deleteDoc(docRef);
     await getNotes(reduxDispatch);
 };
 
@@ -85,9 +85,11 @@ const uploadImage = async (note:any, file: any, secondary: string, id: string, r
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 if(secondary.toLowerCase() === "add") {
                     addNote({...note, image: downloadURL});
+                    getNotes(reduxDispatch);
                 }
                 if(secondary.toLowerCase() === "update") {
                     updateNote(id, {...note, image: downloadURL}, reduxDispatch);
+                    getNotes(reduxDispatch);
                 }
             });
         }

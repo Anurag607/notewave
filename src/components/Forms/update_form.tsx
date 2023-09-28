@@ -5,13 +5,27 @@ import classNames from 'classnames';
 import { getNotes, updateNote, uploadImage } from '../../Firebase/scripts';
 import { PushpinFilled, PushpinOutlined } from '@ant-design/icons';
 import { openColorForm, setNoteColor } from '../../redux/reducers/colorSlice';
+import { openDeleteForm } from '../../redux/reducers/alertSlice';
+
+const Loader = () => {
+  return (    
+    <div role="status">
+        <svg aria-hidden="true" className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-[#ff9b73] dark:fill-gray-900" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+        </svg>
+        <span className="sr-only">Loading...</span>
+    </div>
+  )
+}
 
 const UpdateFormPopup: React.FC = () => {
   const dispatch = useAppDispatch();
   const { noteColor } = useAppSelector((state: any) => state.color);
   const { focusedNote } = useAppSelector((state:any) => state.notes);
   const [file, setFile] = useState<File | null>(null);
-    const [formData, setFormData] = useState({
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
     id: '',
     title: '',
     subtitle: '',
@@ -46,14 +60,16 @@ const UpdateFormPopup: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     if(file == null) {
       await updateNote(formData.id, formData, dispatch).then(() => {
         getNotes(dispatch);
+        setIsLoading(false);
         handleCloseForm()
       });
     } else {
       await uploadImage(formData,file,"update", formData.id, dispatch).then(() => {
-        getNotes(dispatch);
+        setIsLoading(false);
         handleCloseForm()
       });
     }
@@ -120,7 +136,7 @@ const UpdateFormPopup: React.FC = () => {
           </svg>
           <span className="sr-only">Close modal</span>
         </button>
-        {/* Popup Header - Label, color, pin */}
+        {/* Popup Header - Label, delete, color, pin */}
         <div className='border-b rounded-t dark:border-gray-600 flex justify-between items-center'>
           <div className="px-2 py-4 flex gap-2">
             <svg 
@@ -142,6 +158,22 @@ const UpdateFormPopup: React.FC = () => {
             </h3>
           </div>
           <div className={"flex items-center justify-center w-fit h-fit gap-3"}>
+            <button 
+              onClick={() => dispatch(openDeleteForm())}
+              className={"p-2 rounded-full bg-gray-100 cursor-pointer hover:bg-red-300 transition duration-150 ease-in-out"}
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="currentColor" 
+                className="w-6 h-6">
+                <path 
+                  fillRule="evenodd" 
+                  d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" 
+                  clipRule="evenodd" 
+                />
+              </svg>
+            </button>
             <div 
               onClick={() => dispatch(openColorForm())}
               className={classNames({
@@ -166,11 +198,11 @@ const UpdateFormPopup: React.FC = () => {
         {/* Form... */}
         <form 
           onSubmit={handleSubmit}
-          className="relative flex flex-col items-center justify-center w-full"
+          className="relative flex flex-col items-center justify-center"
         >
           <div className="relative flex sm:flex-row h-[60vh] overflow-scroll sm:h-fit flex-col items-start justify-start px-2 sm:px-0 sm:justify-center w-full sm:gap-4">
             {/* Section-1: title, subtitle, emailid */}
-            <div>
+            <div className={"relative w-full"}>
               {inputFields.map((el: typeof inputFields[0],i: number) => {
                 return (
                   <div className="relative mb-4 mt-2" key={i}>
@@ -178,6 +210,7 @@ const UpdateFormPopup: React.FC = () => {
                       type="text" 
                       id={el.name}
                       className={classNames({
+                        "mobile:w-full anti-mobile:w-[19.5rem]": true,
                         "block px-2.5 pb-2.5 pt-4 w-[15rem]": true,
                         "text-sm text-gray-900 bg-gray-100 dark:bg-gray-700": true,
                         "rounded-lg border-1 border-gray-900": true,
@@ -215,6 +248,7 @@ const UpdateFormPopup: React.FC = () => {
                   id="Note"
                   rows={5}
                   className={classNames({
+                    "mobile:w-full anti-mobile:w-[19.5rem] overflow-hidden": true,
                     "block px-2 py-2 w-[15rem] resize-none": true,
                     "text-sm text-gray-900 bg-gray-100 dark:bg-gray-700": true,
                     "rounded-lg border-1 border-gray-900": true,
@@ -251,6 +285,7 @@ const UpdateFormPopup: React.FC = () => {
                   accept="image/*"
                   onChange={ImageChangeHandler}
                   className={classNames({
+                    "mobile:w-full anti-mobile:w-[19.5rem]": true,
                     "block w-[15rem] cursor-pointer focus:outline-none": true,
                     "text-sm text-gray-900": true,
                     "bg-gray-50 dark:text-gray-400": true,
@@ -272,7 +307,7 @@ const UpdateFormPopup: React.FC = () => {
               type="submit"
               className="bg-[#ff9b73] text-white px-4 py-2 rounded-md hover:bg-[#ffc972] focus:outline-none ripple dark:bg-blue-400 hover:dark:bg-blue-600"
             >
-              Update
+              {!isLoading ? "Update" : <Loader />}
             </button>
           </div>
         </form>

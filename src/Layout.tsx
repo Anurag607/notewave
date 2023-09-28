@@ -7,7 +7,7 @@ const Layout = (props: PropsWithChildren) => {
     <div className="relative max-w-screen max-h-screen flex flex-row items-end justify-end bg-white dark:bg-gray-900">
       <Sidebar />
       <div className={classNames({
-          "relative h-screen w-[calc(100vw_-_50px)] flex flex-col items-center justify-between": true,
+          "relative h-screen w-[calc(100vw_-_35px)] flex flex-col items-center justify-between": true,
           "bg-[url('/bg-3.png')] bg-cover bg-no-repeat": true,
           "mobile:w-screen": true,
         })

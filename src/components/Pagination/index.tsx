@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { PaginationProps } from '../../utlis/types';
 import moment from 'moment';
 import classNames from 'classnames';
 import { useAppDispatch } from '../../redux/hooks';
 import { openUpdateForm } from '../../redux/reducers/formSlice';
-import { setFocusedNote } from '../../redux/reducers/noteSlice';
+import { setFocusedNote } from '../../redux/reducers/noteSlice';  
 
 const monthAbreviations = {
     "January": "Jan",
@@ -32,11 +32,15 @@ const Pagination: React.FC<PaginationProps> = ({ data, itemsPerPage }) => {
     const dispatch = useAppDispatch();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const sliderRef = useRef(null);
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  React.useEffect(() => {
+  }, [currentPage])
 
   const paginatedData = data.slice(
     (currentPage - 1) * itemsPerPage,
@@ -44,7 +48,7 @@ const Pagination: React.FC<PaginationProps> = ({ data, itemsPerPage }) => {
   );
   
   return (
-      <div className="flex flex-col items-start justify-between relative w-full h-full px-4 mobile:px-0">
+      <div className="z-[1000] flex flex-col items-start justify-between relative w-full h-full px-4 mobile:px-0">
         <div className="masonry sm:masonry-sm md:masonry-md space-y-4">
             {paginatedData.map((item, index) => {
                 let date = moment.unix((item.createdAt as any).seconds).format('MMMM Do YYYY, h:mm:ss a').split(',')[0];
@@ -73,7 +77,7 @@ const Pagination: React.FC<PaginationProps> = ({ data, itemsPerPage }) => {
                             className={classNames({
                                 "hidden": item.image == null,
                                 "w-full h-56 rounded-lg": true,
-                                "bg-cover bg-no-repeat bg-center": true,
+                                "bg-transparent bg-cover bg-no-repeat bg-center": true,
                             })}
                             style={{"backgroundImage": "url('" + item.image + "')"}}
                         />
@@ -95,8 +99,8 @@ const Pagination: React.FC<PaginationProps> = ({ data, itemsPerPage }) => {
                             className={classNames({
                                 "absolute bottom-4 right-4": true,
                                 "flex items-center justify-center": true,
-                                "w-8 h-8 rounded-full text-white": true,
-                                "bg-gray-800 dark:bg-gray-100 dark:text-gray-800": true,
+                                "w-8 h-8 rounded-full text-white bg-gray-800": true,
+                                "dark:bg-gray-100 dark:text-gray-800": false,
                             })}
                         >
                             <svg  xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-pencil" width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -112,18 +116,48 @@ const Pagination: React.FC<PaginationProps> = ({ data, itemsPerPage }) => {
             })}
         </div>
         {/* Pages... */}
-        <div className="w-full h-fit flex justify-center mt-4">
-            {Array.from({ length: totalPages }, (_, index) => (
+        <div className="w-full h-fit flex justify-center mt-4 pb-10">
             <button
-                key={index}
-                className={`mx-2 px-2 py-1 rounded-full ${
-                currentPage === index + 1 ? 'bg-[#ff9b73] dark:bg-blue-400 text-white' : 'bg-gray-300'
+                disabled = {currentPage === 1}
+                className={`mx-1 px-2 py-1 rounded-full bg-[#ff9b73] dark:bg-blue-400 text-white ${
+                    currentPage === 1 ? 'opacity-50' : 'opacity-100'
                 }`}
-                onClick={() => handlePageChange(index + 1)}
+                onClick={() => {
+                    handlePageChange(currentPage - 1)
+                    if(currentPage >= 4) {
+                        (sliderRef.current as any).scrollLeft -= 33;
+                    }
+                }}
             >
-                {index + 1}
+                {"<"}
             </button>
-            ))}
+            <div ref={sliderRef} className="flex items-center justify-start gap-2 w-[5.35rem] bg-transparent overflow-x-scroll realtive whitespace-nowrap scroll-smooth">
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                        key={index}
+                        className={`px-2 py-1 rounded-full transition ease-out duration-200 ${
+                            currentPage === index + 1 ? 'bg-[#ff9b73] dark:bg-blue-400 text-white' : 'bg-gray-300'
+                        }`}
+                        onClick={() => handlePageChange(index + 1)}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
+            <button
+                disabled = {currentPage === totalPages}
+                className={`mx-1 px-2 py-1 rounded-full bg-[#ff9b73] dark:bg-blue-400 text-white ${
+                    currentPage === totalPages ? 'opacity-50' : 'opacity-100'
+                }`}
+                onClick={() => {
+                    handlePageChange(currentPage + 1);
+                    if(currentPage >= 3) {
+                        (sliderRef.current as any).scrollLeft += 33;
+                    }
+                }}
+            >
+                {">"}
+            </button>
         </div>
     </div>
   );

@@ -53,7 +53,7 @@ const Filter:React.FC = () => {
       </button>
       <div
         className={classNames({
-          "flex flex-col justify-start items-start pr-1.5 overflow-hidden": true,
+          "flex flex-col justify-start items-start pr-2.5 overflow-hidden": true,
           "z-10 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700":
             true,
           "absolute top-[2.75rem] right-2": true,
@@ -64,7 +64,7 @@ const Filter:React.FC = () => {
         <li
           className={classNames({
             "bg-red-400 text-white": true, //colors
-            "flex gap-4 items-center w-[92.5%]": true, //layout
+            "flex gap-4 items-center justify-center w-[92.5%]": true, //layout
             "transition-colors duration-300": true, //animation
             "rounded-md p-2 mx-2 mb-2": true, //self style
             "cursor-pointer": true,
@@ -81,12 +81,11 @@ const Filter:React.FC = () => {
         </li>
         {colors.map((item: any, index: number) => {
           return (
-            <li
+            <div
               key={index}
               data-value={item}
               className={classNames({
-                "h-8 w-[92.5%]": true, //layout
-                "transition-colors duration-300": true, //animation
+                "h-8 w-[92.5%] border-none": true, //layout
                 "rounded-md p-2 mx-2 mb-2": true, //self style
                 "cursor-pointer": true,
                 "py-1": true,

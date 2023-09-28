@@ -21,8 +21,15 @@ const filterDatabySearchParams = async (
     return data;
   }
   data.forEach((Note: any) => {
-    NoteString += Note.title.toLowerCase() + Note.email.toLowerCase();
-    if (NoteString.match(searchTermRegex)) {
+    NoteString += Note.title.toLowerCase();
+    if (NoteString.match(searchTermRegex) && NoteString.includes(searchParam)) {
+      filteredResults.push(Note);
+      NoteString = "";
+    }
+  });
+  data.forEach((Note: any) => {
+    NoteString += Note.email.toLowerCase();
+    if (NoteString.match(searchTermRegex) && NoteString.includes(searchParam)) {
       filteredResults.push(Note);
       NoteString = "";
     }

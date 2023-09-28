@@ -21,7 +21,7 @@ const Search:React.FC = () => {
     <div
       className={classNames({
         "relative flex items-center justify-center": true,
-        "lg:w-fit ml-[0rem]": true,
+        "lg:w-fit": true,
       })}
     >
       <label htmlFor="table-search" className="sr-only">
