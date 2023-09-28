@@ -34,7 +34,6 @@ const AddFormPopup: React.FC = () => {
   });
 
   React.useEffect(() => {
-    console.log(formData, noteColor);
     if(formData.title.length > 0) {
       setFormData({ ...formData, color: noteColor });
     } else {
@@ -59,12 +58,12 @@ const AddFormPopup: React.FC = () => {
       await addNote(formData).then(() => {
         getNotes(dispatch);
         setIsLoading(false);
-        handleCloseForm()
+        handleCloseForm();
       });
     } else {
       await uploadImage(formData,file,"add", " ", dispatch).then(() => {
         setIsLoading(false);
-        handleCloseForm()
+        handleCloseForm();
       });
     }
   };

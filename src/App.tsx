@@ -12,8 +12,10 @@ export default function Home() {
   const { isFormOpen, isUpdateFormOpen } = useAppSelector((state: any) => state.form);
   const { isColorFormOpen } = useAppSelector((state: any) => state.color);
   const { isDeleteFormOpen } = useAppSelector((state: any) => state.alert);
+  const { isImgUploading, progress } = useAppSelector((state: any) => state.image);
   const { noteData } = useAppSelector((state: any) => state.notes);
   const [isLoading, setIsLoading] = useState(true);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const dispatch = useAppDispatch();
   
@@ -22,6 +24,10 @@ export default function Home() {
       setIsLoading(false);
     });
   }, []);
+
+  React.useEffect(() => {
+    setUploadProgress(progress);
+  }, [progress])
 
   if (isLoading) {
     return (
@@ -67,6 +73,12 @@ export default function Home() {
                 {isUpdateFormOpen && <UpdateFormPopup />}
                 {isColorFormOpen && <ColorPopup />}
                 {isDeleteFormOpen && <Alert />}
+                {isImgUploading && 
+                  <div className="flex flex-col gap-4 items-center justify-center h-screen w-screen bg-[#fff7e9] bg-opacity-80 absolute top-0 left-0 z-[100000]">
+                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#faaa87]" />
+                    <h4 className="text-[#faaa87] font-bold text-2xl mb-[7.5rem] mobile:w-[15rem] text-center">{`Uploading ${Math.trunc(uploadProgress)}%...`}</h4>
+                  </div>
+                }
                 <HomePage>
                   {noteData.length > 0 && <Pagination data={noteData} itemsPerPage={6} />}
                   {noteData.length === 0 && <Illustration />}

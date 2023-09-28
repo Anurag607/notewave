@@ -65,12 +65,12 @@ const UpdateFormPopup: React.FC = () => {
       await updateNote(formData.id, formData, dispatch).then(() => {
         getNotes(dispatch);
         setIsLoading(false);
-        handleCloseForm()
+        handleCloseForm();
       });
     } else {
       await uploadImage(formData,file,"update", formData.id, dispatch).then(() => {
         setIsLoading(false);
-        handleCloseForm()
+        handleCloseForm();
       });
     }
   };

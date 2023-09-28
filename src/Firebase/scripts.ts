@@ -6,12 +6,12 @@ import {
   serverTimestamp,
   getDocs,
   query,
-  getDoc,
   doc,
   setDoc,
   deleteDoc,
 } from "firebase/firestore";
 import { setNoteData, setBackupData } from "../redux/reducers/noteSlice";
+import { clearProgress, closeImageUploadIndicator, openImageUploadIndicator, updateProgress } from "../redux/reducers/imgUploadSlice";
 
 // Add Note
 const addNote = async (note: any) => {
@@ -42,17 +42,6 @@ const getNotes = async (reduxDispatch: React.Dispatch<any>) => {
     return notes;
 };
 
-// Get Note
-const getNote = async (id: string) => {
-    const docRef = doc(db, "notes", id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        return { ...docSnap.data(), id: docSnap.id };
-    } else {
-        console.log("No such document!");
-    }
-};
-
 // Update Note
 const updateNote = async (id: string, note: any, reduxDispatch: React.Dispatch<any>) => {
     const docRef = doc(db, "notes", id);
@@ -69,6 +58,7 @@ const deleteNote = async (id: string, reduxDispatch: React.Dispatch<any>) => {
 
 // Upload Image
 const uploadImage = async (note:any, file: any, secondary: string, id: string, reduxDispatch: React.Dispatch<any>) => {
+    reduxDispatch(openImageUploadIndicator());
     let image = "";
     const storageRef = ref(storage, `images/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -76,20 +66,25 @@ const uploadImage = async (note:any, file: any, secondary: string, id: string, r
         "state_changed",
         (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            reduxDispatch(updateProgress(progress));
             console.log("Upload is " + progress + "% done");
         },
         (error) => {
             console.log(error);
         },
         () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
                 if(secondary.toLowerCase() === "add") {
-                    addNote({...note, image: downloadURL});
-                    getNotes(reduxDispatch);
+                    await addNote({...note, image: downloadURL});
+                    await getNotes(reduxDispatch);
+                    reduxDispatch(closeImageUploadIndicator());
+                    reduxDispatch(clearProgress());
                 }
                 if(secondary.toLowerCase() === "update") {
-                    updateNote(id, {...note, image: downloadURL}, reduxDispatch);
-                    getNotes(reduxDispatch);
+                    await updateNote(id, {...note, image: downloadURL}, reduxDispatch);
+                    await getNotes(reduxDispatch);
+                    reduxDispatch(closeImageUploadIndicator());
+                    reduxDispatch(clearProgress());
                 }
             });
         }
@@ -97,4 +92,4 @@ const uploadImage = async (note:any, file: any, secondary: string, id: string, r
     return image;
 };
 
-export { addNote, getNotes, getNote, updateNote, deleteNote, uploadImage };
+export { addNote, getNotes, updateNote, deleteNote, uploadImage };
