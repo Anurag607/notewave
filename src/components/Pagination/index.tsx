@@ -131,7 +131,7 @@ const Pagination: React.FC<PaginationProps> = ({ data, itemsPerPage }) => {
             >
                 {"<"}
             </button>
-            <div ref={sliderRef} className="flex items-center justify-start gap-2 w-[5.35rem] bg-transparent overflow-x-scroll realtive whitespace-nowrap scroll-smooth">
+            <div ref={sliderRef} className={`flex items-center justify-start gap-2 ${totalPages >= 3 ? "w-[5.35rem]" : "w-fit"} bg-transparent overflow-x-scroll realtive whitespace-nowrap scroll-smooth`}>
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
                         key={index}
