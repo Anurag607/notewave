@@ -38,12 +38,8 @@ const filterDatabyCategory = async (
   reduxDispatch: React.Dispatch<any>
 ) => {
   let filteredResults: any[] = [];
-  if (category === "All") {
-    reduxDispatch(setNoteData(data));
-    return data;
-  }
   data.forEach((Note: any) => {
-    if (Note.category === category) {
+    if (Note.color === category) {
       filteredResults.push(Note);
     }
   });

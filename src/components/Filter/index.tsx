@@ -7,11 +7,13 @@ import { useOnClickOutside } from "usehooks-ts";
 import { setNoteData } from "../../redux/reducers/noteSlice";
 import { filterDatabyCategory } from "../../scipts/filterScript";
 
+const colors = ["#faaa73","#fef595","#bbf7d0","#bae6fd","#fecaca"]
+
 const Filter:React.FC = () => {
   const ref = React.useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const { isFilterOpen } = useAppSelector((state: any) => state.filter);
-  const { noteData, backupData, categoryData } = useAppSelector(
+  const { backupData } = useAppSelector(
     (state: any) => state.notes
   );
 
@@ -21,7 +23,7 @@ const Filter:React.FC = () => {
 
   const ClickEventHandler = (event: React.MouseEvent<HTMLElement>) => {
     const target = event.currentTarget;
-    filterDatabyCategory(noteData,target.dataset.value!, dispatch);
+    filterDatabyCategory(backupData,target.dataset.value!, dispatch);
     dispatch(closeFilter());
   };
 
@@ -51,14 +53,12 @@ const Filter:React.FC = () => {
       </button>
       <div
         className={classNames({
-          "flex flex-col overflow-y-scroll": true,
+          "flex flex-col justify-start items-start pr-1.5 overflow-hidden": true,
           "z-10 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700":
             true,
           "absolute top-[2.75rem] right-2": true,
           "transition-transform .3s ease-in-out md:-translate-x-0": true, //animations
           "w-0 py-0": !isFilterOpen,
-          "h-[10rem]": categoryData.length > 0,
-          "w-[8.75rem]": categoryData.length === 0,
         })}
       >
         <li
@@ -66,7 +66,7 @@ const Filter:React.FC = () => {
             "bg-red-400 text-white": true, //colors
             "flex gap-4 items-center w-[92.5%]": true, //layout
             "transition-colors duration-300": true, //animation
-            "rounded-md p-2 mx-2": true, //self style
+            "rounded-md p-2 mx-2 mb-2": true, //self style
             "cursor-pointer": true,
             "py-1 my-1": true,
             "flex items-center justify-start": true, //layout
@@ -79,25 +79,23 @@ const Filter:React.FC = () => {
         >
           {"Clear"}
         </li>
-        {categoryData.map((item: any, index: number) => {
+        {colors.map((item: any, index: number) => {
           return (
             <li
               key={index}
-              data-value={item.category_id}
+              data-value={item}
               className={classNames({
-                "text-blue-800 hover:bg-blue-800 hover:text-white": true, //colors
-                "flex gap-4 items-center w-[92.5%]": true, //layout
+                "h-8 w-[92.5%]": true, //layout
                 "transition-colors duration-300": true, //animation
-                "rounded-md p-2 mx-2": true, //self style
+                "rounded-md p-2 mx-2 mb-2": true, //self style
                 "cursor-pointer": true,
                 "py-1": true,
                 "flex items-center justify-start": true, //layout
                 hidden: !isFilterOpen,
               })}
+              style={{"backgroundColor": item}}
               onClick={ClickEventHandler}
-            >
-              {item.name}
-            </li>
+            />
           );
         })}
       </div>

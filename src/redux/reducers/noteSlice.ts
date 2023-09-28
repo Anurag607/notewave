@@ -6,7 +6,6 @@ const NoteSlice = createSlice({
   initialState: {
     noteData: [] as noteType[],
     backupData: [] as noteType[],
-    categoryData: [] as any[],
     focusedNote: {
       id: "",
       title: "",
@@ -16,7 +15,7 @@ const NoteSlice = createSlice({
       type: "",
       image: "",
       pinned: false,
-      color: "#ff9b73"
+      color: "#faaa73"
     } as noteType,
   },
   reducers: {
@@ -25,9 +24,6 @@ const NoteSlice = createSlice({
     },
     setBackupData: (state, action: PayloadAction<noteType[]>) => {
       state.backupData = action.payload;
-    },
-    setCategoryData: (state, action: PayloadAction<any[]>) => {
-      state.categoryData = action.payload;
     },
     clearNoteData: (state) => {
       state.noteData = [];
@@ -45,7 +41,7 @@ const NoteSlice = createSlice({
       type: "",
       image: "",
       pinned: false,
-      color: "#ff9b73"
+      color: "#faaa73"
     } as noteType;
     },
   },
@@ -53,7 +49,6 @@ const NoteSlice = createSlice({
 
 export const {
   setNoteData,
-  setCategoryData,
   clearNoteData,
   setBackupData,
   setFocusedNote,

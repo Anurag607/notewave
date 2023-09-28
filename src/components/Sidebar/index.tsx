@@ -24,7 +24,7 @@ const Sidebar: React.FC = () => {
         "flex flex-col justify-between z-[1001]": true, // layout
         "bg-[#ffffff] dark:bg-indigo-700 text-zinc-50": true, // colors
         "fixed left-0 top-0": true, // positioning
-        "md:h-screen h-full md:!w-[50px] w-0": true, // for height and width
+        "md:h-screen h-full w-[50px] mobile:w-0": true, // for height and width
         "transition-transform .3s ease-in-out md:-translate-x-0": true, //animations
         "-translate-x-full ": !isSidebarOpen, //hide sidebar to the left when closed
       })}

@@ -4,6 +4,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  @variants responsive {
+    .masonry {
+      column-gap: 1.5em;
+      column-count: 1;
+    }
+
+    .masonry-sm {
+      column-gap: 1.5em;
+      column-count: 2;
+    }
+
+    .masonry-md {
+      column-gap: 1.5em;
+      column-count: 3;
+    }
+
+    .break-inside {
+      break-inside: avoid;
+    }
+
+  }
+}
+
 :root {
   /* General */
   --black: #141414;
@@ -21,6 +45,13 @@
   --light-orange: #ffe1cc;
   --light-pink: #fbe2f4;
   --light-red: #f9d6d6;
+
+  /* For notes */
+  --color-1: #faaa73;
+  --color-2: #fef595;
+  --color-3: #bbf7d0;
+  --color-4: #bae6fd;
+  --color-5: #fecaca;
 }
 
 * {
@@ -92,4 +123,25 @@ input[type=passwords] {
 .ripple:active {
   background-size: 100%;
   transition: all 0s;
+}
+
+.color_input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 75px;
+  height: 75px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.color_input::-webkit-color-swatch {
+  border-radius: 0.5rem;
+  border: none;
+}
+
+.color_input::-moz-color-swatch {
+  border-radius: 0.5rem;
+  border: none;
 }

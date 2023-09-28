@@ -68,7 +68,7 @@ const deleteNote = async (id: string, reduxDispatch: React.Dispatch<any>) => {
 };
 
 // Upload Image
-const uploadImage = async (note:any, file: any) => {
+const uploadImage = async (note:any, file: any, secondary: string, id: string, reduxDispatch: React.Dispatch<any>) => {
     let image = "";
     const storageRef = ref(storage, `images/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -83,7 +83,12 @@ const uploadImage = async (note:any, file: any) => {
         },
         () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                addNote({...note, image: downloadURL});
+                if(secondary.toLowerCase() === "add") {
+                    addNote({...note, image: downloadURL});
+                }
+                if(secondary.toLowerCase() === "update") {
+                    updateNote(id, {...note, image: downloadURL}, reduxDispatch);
+                }
             });
         }
     );

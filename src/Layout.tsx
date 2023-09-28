@@ -9,10 +9,12 @@ const Layout = (props: PropsWithChildren) => {
       <div className={classNames({
           "relative h-screen w-[calc(100vw_-_50px)] flex flex-col items-center justify-between": true,
           "bg-[url('/bg-3.png')] bg-cover bg-no-repeat": true,
+          "mobile:w-screen": true,
         })
       }>
         <Navbar />
         {props.children}
+        <div className={"w-full h-[2rem] dark:bg-gray-900"} />
       </div>
     </div>
   );

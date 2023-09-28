@@ -9,6 +9,7 @@ import AddFormPopup from "./Forms/add_form";
 import UpdateFormPopup from "./Forms/update_form";
 import FAB from "./FAB";
 import Pagination from "./Pagination";
+import ColorPopup from "./ColorPopup";
 
 export {
   Navbar,
@@ -22,4 +23,5 @@ export {
   UpdateFormPopup,
   FAB,
   Pagination,
+  ColorPopup
 };

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { closeForm } from '../../redux/reducers/formSlice';
 import classNames from 'classnames';
 import { addNote, getNotes, uploadImage } from '../../Firebase/scripts';
 import { PushpinFilled, PushpinOutlined } from '@ant-design/icons';
+import { openColorForm } from '../../redux/reducers/colorSlice';
 
 const AddFormPopup: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { noteColor } = useAppSelector((state: any) => state.color);
   const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -15,8 +17,16 @@ const AddFormPopup: React.FC = () => {
     note: '',
     pinned: false,
     image: null,
-    color: '#ff9b73',
+    color: noteColor,
   });
+
+  React.useEffect(() => {
+    if(formData.title.length > 0) {
+      setFormData({ ...formData, color: noteColor });
+    } else {
+      setFormData({ ...formData});
+    }
+  }, [noteColor]);
 
   const handleCloseForm = () => {
     dispatch(closeForm());
@@ -30,12 +40,16 @@ const AddFormPopup: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if(file == null) {
-      await addNote(formData);
+      await addNote(formData).then(() => {
+        getNotes(dispatch);
+        handleCloseForm()
+      });
     } else {
-      await uploadImage(formData,file);
+      await uploadImage(formData,file,"add", " ", dispatch).then(() => {
+        getNotes(dispatch);
+        handleCloseForm()
+      });
     }
-    await getNotes(dispatch);
-    handleCloseForm();
   };
 
   const inputFields = [
@@ -68,6 +82,7 @@ const AddFormPopup: React.FC = () => {
       "bg-gray-800 bg-opacity-50": true,
     })}>
       <div className="relative bg-white mobile:w-[95vw] rounded-lg p-4 shadow-lg w-fit dark:bg-gray-900">
+        {/* Close Button... */}
         <button
           className={classNames({
             "absolute top-1 right-1": true,
@@ -96,6 +111,7 @@ const AddFormPopup: React.FC = () => {
           <span className="sr-only">Close modal</span>
         </button>
         <div className='border-b rounded-t dark:border-gray-600 flex justify-between items-center'>
+          {/* Popup Header - Label, color, pin */}
           <div className="px-2 py-4 flex gap-2">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
@@ -115,13 +131,13 @@ const AddFormPopup: React.FC = () => {
               Add Note
             </h3>
           </div>
-          <div className={"flex gap-2 items-center justify-center w-fit h-fit"}>
-            <input 
-              type="color" 
-              id="noteColor" 
-              name="noteColor" 
-              value={formData.color}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, color: e.target.value })}  
+          <div className={"flex items-center justify-center w-fit h-fit gap-3"}>
+            <div
+              onClick={() => dispatch(openColorForm())}
+              className={classNames({
+                "rounded-lg p-4 cursor-pointer": true,
+              })}
+              style={{"backgroundColor": formData.color}}
             />
             <div 
               onClick={() => setFormData({ ...formData, pinned: !formData.pinned })}
@@ -137,11 +153,13 @@ const AddFormPopup: React.FC = () => {
             </div>
           </div>
         </div>
+        {/* Form... */}
         <form 
           onSubmit={handleSubmit}
           className="relative flex flex-col items-center justify-center w-full"
         >
           <div className="relative flex sm:flex-row h-[60vh] overflow-scroll sm:h-fit flex-col items-start justify-start px-2 sm:px-0 sm:justify-center w-full sm:gap-4">
+            {/* Section-1: title, subtitle, emailid */}
             <div>
               {inputFields.map((el: typeof inputFields[0],i: number) => {
                 return (
@@ -179,6 +197,7 @@ const AddFormPopup: React.FC = () => {
                 )
               })}
             </div>
+            {/* Section-2: Note, Image */}
             <div>
               <div className="relative mb-4 mt-2 flex flex-col items-start justify-start">
                 <textarea
@@ -234,7 +253,8 @@ const AddFormPopup: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>    
+          </div>
+          {/* Submit... */}
           <div className="mt-4 w-full flex items-center justify-end">
             <button
               type="submit"

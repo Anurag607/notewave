@@ -6,6 +6,7 @@ import menuSlice from "./reducers/menuSlice";
 import filterSlice from "./reducers/filterSlice";
 import categorySlice from "./reducers/categorySlice";
 import formSlice from './reducers/formSlice';
+import colorSlice from "./reducers/colorSlice";
 
 export default combineReducers({
   sidebar: sidebarSlice,
@@ -15,4 +16,5 @@ export default combineReducers({
   filter: filterSlice,
   cateogry: categorySlice,
   form: formSlice,
+  color: colorSlice,
 });
