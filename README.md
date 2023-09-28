@@ -1,3 +1,20 @@
+
+# NoteWave
+
+* A community note-keeping application built using React, Typescript, Firesbase and TailwinCSS.
+* It allows user to add, edit and remove their notes as well as search for them on the basis of the title and email id or filter them based on their color category.
+* Notewave also features a minimal, responsive UI which is easy on the eye and easy to navigate as well as a dark mode for all those night owls out there!
+
+# Screenshots
+
+### Light Mode:
+
+![1695907719432](image/README/1695907719432.png)
+
+### **Dark Mode:**
+
+![1695907733245](image/README/1695907733245.png)
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
